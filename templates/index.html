@@ -1,0 +1,422 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estimation Engine</title>
+    <style>
+        /* CSS STYLING */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            /* Using a high-quality dark car wallpaper as the base */
+            background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?q=80&w=1920') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* The dark dimming effect from your reference image */
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: -1;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        .card {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 35px;
+            padding: 45px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            color: white;
+            text-align: center;
+        }
+
+        .header svg {
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            letter-spacing: 5px;
+            margin-bottom: 35px;
+            font-weight: 500;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group {
+            flex: 1;
+        }
+
+        .input-group.full {
+            width: 100%;
+        }
+
+        label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            color: #999999;
+            text-transform: uppercase;
+        }
+
+        input, select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Styling the dropdown arrow */
+        select option {
+            background: #121212;
+            color: white;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            margin-top: 15px;
+            border-radius: 15px;
+            border: none;
+            background: #ffffff;
+            color: #000000;
+            font-weight: 800;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .btn:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h3 {
+            font-weight: 400;
+            font-size: 1rem;
+            color: #4ade80; /* Subtle green for the result */
+        }
+    </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <svg viewBox="0 0 100 30" width="80" height="30">
+                    <path d="M15,25 Q15,12 35,10 L65,10 Q85,12 85,25" stroke="white" fill="none" stroke-width="1.5"/>
+                    <circle cx="30" cy="25" r="2.5" fill="white"/>
+                    <circle cx="70" cy="25" r="2.5" fill="white"/>
+                </svg>
+                <h1>Estimation Engine</h1>
+            </div>
+
+            <form action="/predict" method="post">
+                <div class="row">
+                    <div class="input-group">
+                        <label>Model Year</label>
+                        <input type="number" name="year" placeholder="2022" required min="1990" max="2026">
+                    </div>
+                    <div class="input-group">
+                        <label>Price (Lakhs)</label>
+                        <input type="number" step="0.01" name="price" placeholder="12.50" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group full">
+                        <label>Kms Driven</label>
+                        <input type="number" name="kms" placeholder="15000" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <label>Fuel</label>
+                        <select name="fuel">
+                            <option value="0">Petrol</option>
+                            <option value="1">Diesel</option>
+                            <option value="2">CNG</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Transmission</label>
+                        <select name="transmission">
+                            <option value="0">Manual</option>
+                            <option value="1">Automatic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">Evaluate Value</button>
+            </form>
+
+            {% if prediction_text %}
+            <div class="result-box">
+                <h3>{{ prediction_text }}</h3>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MACLAREN | Friend's Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Outfit:wght@200;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Deeper, sophisticated orange matching 'Ember Orange' accents */
+            --mclaren-ember: #c2410c; 
+            --carbon-black: #0a0a0a;
+            --glass-white: rgba(255, 255, 255, 0.05);
+            --panel-bg: rgba(0, 0, 0, 0.8);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--carbon-black);
+            color: white;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Background using your provided McLaren Spider URL */
+        .bg-wrap {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.8) 100%), 
+                        url('https://www.lunaluxuryrentals.com.au/cdn/shop/files/4DECD9BA-4F6C-42ED-8076-208B6018FB78.png?v=1739968624&width=1946') center/cover;
+            background-attachment: fixed;
+        }
+
+        /* Centered layout for a balanced look */
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .main-card {
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 50px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            border-top: 4px solid var(--mclaren-ember);
+        }
+
+        .header { margin-bottom: 35px; text-align: center; }
+        
+        .header h2 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 8px;
+            color: var(--mclaren-ember);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        label {
+            display: block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: #888;
+        }
+
+        input, select {
+            width: 100%;
+            background: var(--glass-white);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--mclaren-ember);
+            background: rgba(194, 65, 12, 0.05);
+        }
+
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 20px;
+            background: var(--mclaren-ember);
+            color: white;
+            border: none;
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-submit:hover {
+            filter: brightness(1.2);
+            box-shadow: 0 10px 30px rgba(194, 65, 12, 0.4);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px dashed var(--mclaren-ember);
+            text-align: center;
+        }
+
+        .result h3 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 2rem;
+            color: white;
+        }
+
+        select option { background: #111; color: white; }
+    </style>
+</head>
+<body>
+    <div class="bg-wrap"></div>
+
+    <div class="container">
+        <div class="main-card">
+            <div class="header">
+                <h2>Bespoke Lab</h2>
+                <h1>VALUATION.</h1>
+            </div>
+
+            <form action="/predict" method="POST">
+                <div class="grid">
+                    <div>
+                        <label>Year</label>
+                        <input type="number" name="Year" placeholder="2024" required>
+                    </div>
+                    <div>
+                        <label>Base (L)</label>
+                        <input type="number" step="0.01" name="Present_Price" placeholder="Price" required>
+                    </div>
+                </div>
+
+                <label>Distance Traveled (KM)</label>
+                <input type="number" name="Kms_Driven" placeholder="Odometer" required>
+
+                <div class="grid">
+                    <div>
+                        <label>Fuel</label>
+                        <select name="Fuel_Type" required>
+                            <option value="0">Petrol</option>
+                            <option value="1">Diesel</option>
+                            <option value="2">CNG</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Transmission</label>
+                        <select name="Transmission" required>
+                            <option value="0">Manual</option>
+                            <option value="1">Automatic</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">SCAN ASSET</button>
+            </form>
+
+            {% if prediction_text %}
+            <div class="result">
+                <span style="font-size: 0.6rem; letter-spacing: 3px; color: #777;">APPRAISAL RESULT</span>
+                <h3>₹ {{ prediction_text }} L</h3>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+
