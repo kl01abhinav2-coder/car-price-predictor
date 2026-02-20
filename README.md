@@ -34,17 +34,21 @@ https://web-production-86706.up.railway.app/
 ```bash
 git clone [https://github.com/Renju-rl/car_price.git](https://github.com/Renju-rl/car_price.git)
 cd car_price
+```
 
 #### 2 Create virtual environment
-bash
+```bash
 python -m venv venv
 venv\Scripts\activate
+```
 
 #### 3 Install dependencies
-bash
+```bash
 pip install -r requirements.txt
+```
 
 #### 4 Run the application
-bash
+```bash
 python app.py
+```
 
