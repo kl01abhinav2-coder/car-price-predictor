@@ -30,10 +30,9 @@ https://web-production-86706.up.railway.app/
 - *Deployment:* Railway
 
 - ## How to Run Locally
-
-- #### 1️ Clone the repository
-bash
-git clone https://github.com/Renju-rl/car_price.git
+### 1. Clone the repository
+```bash
+git clone [https://github.com/Renju-rl/car_price.git](https://github.com/Renju-rl/car_price.git)
 cd car_price
 
 #### 2 Create virtual environment
