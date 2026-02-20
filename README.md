@@ -1,4 +1,4 @@
-![Screen Recording 2026-02-20 105817](https://github.com/user-attachments/assets/07476a23-0e16-4875-96c2-08c94893d7c4)# Car Price Prediction (Flask ML App)
+# Car Price Prediction (Flask ML App)
 A production-ready Flask-based machine learning web application that predicts the market selling price of used cars based on user-provided features. The project combines a trained Random Forest Regression model with a modern, cinematic UI and is deployed live on Railway.
 ## Live Link
 https://web-production-86706.up.railway.app/
